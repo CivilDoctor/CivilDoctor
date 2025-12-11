@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Civildoctor — Wind Tool (IS 875 & ASCE/GCC)</title>
+  <link rel="stylesheet" href="../css/wind.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🧱 Civildoctor</div>
+    <nav class="nav"><a href="../index.html">Home</a><a href="../tools/">Tools</a></nav>
+  </header>
+
+  <main class="page">
+    <section class="left-panel card">
+      <h1>Wind Load Calculator — IS 875 (India) & ASCE/GCC</h1>
+      <p class="muted">Hybrid UI for India & Middle East. Auto (city) or manual input. Generates PDF reports with CivilDoctor watermark. Use for quick checks — always verify with licensed engineer.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-code="is">IS 875 (India)</button>
+        <button class="tab" data-code="asce">ASCE/GCC</button>
+      </div>
+
+      <div class="mode-row">
+        <label class="switch"><input type="radio" name="mode" value="auto" checked> Auto (city preset)</label>
+        <label class="switch"><input type="radio" name="mode" value="manual"> Manual</label>
+      </div>
+
+      <div class="form-block">
+        <label>City / preset</label>
+        <select id="citySelect" class="full"></select>
+
+        <div class="row">
+          <div class="col"><label>Building height (m)</label><input id="height" type="number" value="12"></div>
+          <div class="col"><label>Building type</label>
+            <select id="bldgType">
+              <option value="normal">Normal</option>
+              <option value="important">Important (hospital/power)</option>
+              <option value="critical">Critical / cyclone</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="manualInputs" style="display:none">
+          <h3>Manual Inputs</h3>
+          <div class="row">
+            <div class="col"><label>Basic wind speed (Vb m/s or V mph)</label><input id="man_v" placeholder="enter Vb (m/s) or V (mph) for ASCE"></div>
+            <div class="col narrow"><label>Unit</label><select id="man_unit"><option value="ms">m/s</option><option value="mph">mph</option></select></div>
+          </div>
+        </div>
+
+        <div id="isSection" class="code-section">
+          <h3>IS 875 Inputs</h3>
+          <div class="row">
+            <div class="col"><label>k1 (risk)</label><input id="is_k1" value="1.00" step="0.01"></div>
+            <div class="col narrow"><label>k2 (terrain)</label><select id="is_k2"><option value="1.00">Cat 2</option><option value="0.95">Cat 1</option><option value="1.05">Cat 3</option><option value="1.10">Cat 4</option></select></div>
+            <div class="col narrow"><label>k3 (topography)</label><input id="is_k3" value="1.00" step="0.01"></div>
+            <div class="col narrow"><label>k4 (importance)</label><input id="is_k4" value="1.00" step="0.01"></div>
+          </div>
+          <div class="row mt6">
+            <div class="col"><label>Ref width (m)</label><input id="is_w" value="12"></div>
+            <div class="col"><label>Ref length (m)</label><input id="is_l" value="20"></div>
+          </div>
+          <div class="actions">
+            <button id="isCalc" class="btn">Calculate IS 875</button>
+            <button id="compareBtn" class="btn secondary">Compare Codes</button>
+          </div>
+        </div>
+
+        <div id="asceSection" class="code-section" style="display:none">
+          <h3>ASCE / GCC Inputs</h3>
+          <div class="row">
+            <div class="col"><label>Basic wind speed V (mph)</label><input id="asce_V" placeholder="e.g. 115"></div>
+            <div class="col narrow"><label>Exposure</label><select id="asce_exp"><option value="0.7">B</option><option value="0.85" selected>C</option><option value="1.03">D</option></select></div>
+            <div class="col narrow"><label>Kd</label><input id="asce_kd" value="0.85" step="0.01"></div>
+            <div class="col narrow"><label>Kzt</label><input id="asce_kzt" value="1.0" step="0.01"></div>
+          </div>
+          <div class="actions">
+            <button id="asceCalc" class="btn">Calculate ASCE/GCC</button>
+            <button id="compareBtn2" class="btn secondary">Compare Codes</button>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="card small">
+          <div class="row" style="align-items:center">
+            <input id="caseName" placeholder="Case name (e.g. Mumbai residential)" class="full">
+            <button id="saveCase" class="btn small">Save</button>
+            <button id="updateCase" class="btn small secondary" style="display:none">Update</button>
+          </div>
+          <div class="row mt6">
+            <select id="savedCases" class="full"></select>
+            <button id="loadCase" class="btn small">Load</button>
+            <button id="deleteCase" class="btn small ghost">Delete</button>
+          </div>
+        </div>
+
+        <div class="row mt8">
+          <button id="exportPdf" class="btn">Export PDF (with watermark)</button>
+          <button id="exportCsv" class="btn secondary">Export CSV</button>
+          <button id="copySummary" class="btn ghost">Copy Summary</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-panel">
+      <div class="card">
+        <div class="card-head"><strong>Results & Chart</strong><span id="status" class="muted">Ready</span></div>
+        <canvas id="chart" width="520" height="320"></canvas>
+        <div id="summary" class="summary">No calculations yet.</div>
+        <div class="actions mt8">
+          <button id="downloadChart" class="btn small">Download Chart</button>
+          <button id="drawDiag" class="btn small secondary">Draw Diagram</button>
+        </div>
+      </div>
+      <div class="card mt12">
+        <strong>Wind Diagram</strong>
+        <div id="diagram" class="diagram">Diagram will appear here after calculation</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">© 2025 Civildoctor — Quick checks only. Always verify with the code and licensed engineer.</footer>
+
+  <!-- libraries for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="../js/wind.js"></script>
+</body>
+</html>
