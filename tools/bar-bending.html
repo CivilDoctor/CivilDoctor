@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Bending Schedule | CivilDoctor Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #004fcc;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eaffea;
+            border-left: 5px solid green;
+        }
+        a.home-link {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            color: #0066ff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bar Bending Schedule (BBS)</h2>
+
+    <label>Diameter of Bar (mm)</label>
+    <select id="dia">
+        <option value="8">8 mm</option>
+        <option value="10">10 mm</option>
+        <option value="12">12 mm</option>
+        <option value="16">16 mm</option>
+        <option value="20">20 mm</option>
+        <option value="25">25 mm</option>
+    </select>
+
+    <label>Number of Bars</label>
+    <input type="number" id="numBars" placeholder="e.g. 12">
+
+    <label>Length of One Bar (m)</label>
+    <input type="number" id="length" placeholder="e.g. 4.5">
+
+    <button onclick="calculateBBS()">Generate BBS</button>
+
+    <div id="output" class="result" style="display:none;"></div>
+
+    <a href="index.html" class="home-link">← Back to Tools</a>
+</div>
+
+<script>
+function calculateBBS() {
+    let dia = parseFloat(document.getElementById('dia').value);
+    let numBars = parseFloat(document.getElementById('numBars').value);
+    let length = parseFloat(document.getElementById('length').value);
+
+    if (!numBars || !length) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    let unitWeight = (dia * dia) / 162;  // standard formula
+    let totalWeight = unitWeight * numBars * length;
+
+    document.getElementById("output").style.display = "block";
+    document.getElementById("output").innerHTML =
+        "<b>Unit Weight:</b> " + unitWeight.toFixed(3) + " kg/m<br>" +
+        "<b>Total Weight:</b> " + totalWeight.toFixed(2) + " kg";
+}
+</script>
+
+</body>
+</html>
